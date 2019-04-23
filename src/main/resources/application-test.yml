@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      datasource:
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/basedata?useSSL=false&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+          username: root
+          driver-class-name: com.mysql.jdbc.Driver
+          password: 1234567
+          dbcp2:
+            max-idle: 10
+            max-wait-millis: 10000
+            min-idle: 5
+            initial-size: 5
+        slave_1:
+          username: root
+          password: 1234567
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/sys?useSSL=false&zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+          dbcp2:
+            max-idle: 10
+            max-wait-millis: 10000
+            min-idle: 5
+            initial-size: 5

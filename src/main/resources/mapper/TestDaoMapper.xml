@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wmyskz.springboot.demo.mapper.TestDaoMapper">
+    <select id="why"   resultType="Integer">
+        select count(*) from course
+
+    </select>
+    <select id="test"   resultType="Integer">
+        select count(*) from course
+
+    </select>
+    <select id="vvv"   resultType="Integer">
+        select count(*) from course
+
+    </select>
+    <select id="zzz"   resultType="cn.wmyskz.springboot.demo.entity.User">
+        SELECT * from course where cno='3-105'
+    </select>
+    <select id="exchange"   resultType="Map">
+        SELECT * from sys_config
+    </select>
+
+</mapper>

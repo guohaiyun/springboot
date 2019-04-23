@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status表示log4j2本身的日志信息打印级别，和下面的level，不是一个概念 -->
+<!--TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF-->
+<Configuration status="INFO" monitorInterval="30">
+    <Properties>
+
+        <property name="app_name">springboot</property>
+        <property name="log_path">app_logs/${app_name}</property>
+        <property name="size_limit">100</property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.sss} [%-5level] [%logger{36}] (%F:%L) – %msg%n" />
+
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT"
+                             onMismatch="DENY" />
+        </Console>
+
+        <!--<Filters>-->
+            <!--&lt;!&ndash;只允许级别为error的日志通过&ndash;&gt;-->
+            <!--<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
+        <!--</Filters>-->
+
+        <RollingRandomAccessFile  name="RollingRandomAccessFile" fileName="${log_path}/${app_name}.log"
+                                  filePattern="${log_path}/$${date:yyyy-MM}/$${date:yyyy-MM-dd}/${app_name}-%d{yyyy-MM-dd}_%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.sss} [%-5level] [%logger{36}] (%F:%L) – %msg%n" />
+            <Policies>
+                <!--<OnStartupTriggeringPolicy />-->
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1000" >
+                <Delete basePath="${log_path}" maxDepth="3">
+                    <IfFileName glob="**/${app_name}-*.log.gz" />
+                    <IfLastModified age="1d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+
+        </RollingRandomAccessFile>
+    </Appenders>
+
+
+
+    <Loggers>
+        <!--<AsyncLogger name="org.springframework" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="org.quartz" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="org.apache.ibatis" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="org.apache.http" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="com.zaxxer.hikari" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="org.mybatis.spring" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="com.baomidou.dynamic" level="WARN" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="org.apache" level="ERROR" includeLocation="true"></AsyncLogger>-->
+        <!--<AsyncLogger name="cn.wmyskz.springboot.demo" level="TRACE" includeLocation="true" >-->
+            <!--<AppenderRef ref="RollingRandomAccessFile"/>-->
+
+        <!--</AsyncLogger>-->
+
+        <!-- - 异步记录日志 - 需要LMAXDisruptor的支持 -->
+         <AsyncRoot level="Trace" includeLocation="true" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="RollingRandomAccessFile"/>
+        </AsyncRoot>
+
+        <!-- All < Trace < Debug < Info < Warn < Error < Fatal < OFF. -->
+        　　　　 <!-- 程序会打印高于或等于所设置级别的日志，设置的日志等级越高，打印出来的日志就越少。-->
+        <!-- 此level设置的日志级别，是过滤项目中输出的日志信息，和ThresholdFilter的level有所区别 -->
+    </Loggers>
+</Configuration>
