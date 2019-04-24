@@ -1,11 +1,8 @@
 package cn.wmyskz.springboot.shiro.entity;
 
-import cn.wmyskz.springboot.util.config.shiro.Role;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -16,7 +13,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author jobob
- * @since 2019-04-22
+ * @since 2019-04-24
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -30,7 +27,9 @@ public class SysUse implements Serializable {
 
     private String name;
 
+    private Integer age;
+
     private String password;
 
-    private List<Role> roles;
+
 }

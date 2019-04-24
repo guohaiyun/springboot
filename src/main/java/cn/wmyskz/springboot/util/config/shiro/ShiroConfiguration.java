@@ -1,5 +1,6 @@
 package cn.wmyskz.springboot.util.config.shiro;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -18,11 +19,18 @@ import java.util.Map;
 @Configuration
 public class ShiroConfiguration {
 
-
+    @Bean
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("SHA-256");//散列算法:MD2、MD5、SHA-1、SHA-256、SHA-384、SHA-512等。
+        hashedCredentialsMatcher.setHashIterations(4);//散列的次数，默认1次， 设置两次相当于 md5(md5(""));
+        return hashedCredentialsMatcher;
+    }
     //将自己的验证方式加入容器
     @Bean
     public  MyShiroRealm myShiroRealm() {
         MyShiroRealm myShiroRealm = new MyShiroRealm();
+        myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher()); //+++++++++++
         return myShiroRealm;
     }
 
@@ -46,7 +54,7 @@ public class ShiroConfiguration {
             map.put("/shiro/sys-use/login", "anon");
             map.put("/**","authc");
 //        //登录
-        shiroFilterFactoryBean.setLoginUrl("/shiro/sys-use/login");
+        shiroFilterFactoryBean.setLoginUrl("/login");
 //        //首页
         shiroFilterFactoryBean.setSuccessUrl("/index");
 //        //错误页面，认证不通过跳转

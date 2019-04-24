@@ -1,20 +1,26 @@
 package cn.wmyskz.springboot.util.config.shiro;
 
-import cn.wmyskz.springboot.shiro.entity.SysUse;
-import cn.wmyskz.springboot.shiro.service.ISysUseService;
+import cn.wmyskz.springboot.shiro.entity.*;
+import cn.wmyskz.springboot.shiro.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author haiyun.guo
@@ -26,36 +32,39 @@ public class MyShiroRealm extends AuthorizingRealm{
     //用于用户查询
     @Autowired
     private ISysUseService userService;
-
+    @Autowired
+    private ISysRoleService roleService;
+    @Autowired
+    private ISysPermissionService permissionService;
+    @Autowired
+    private ISysUseRoleService useRoleService;
+    @Autowired
+    private ISysRolePermissionService rolePermissionService;
     //角色权限和对应权限添加   //授权认证用注解实现更佳
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //获取登录用户名
         String name= (String) principalCollection.getPrimaryPrincipal();
-        //查询用户名称
-//        SysUse user = userService.getOne(new QueryWrapper<SysUse>().eq("name",name));
 
-        SysUse user=new SysUse();
-        Role role=new Role();
-        role.setId(12);
-        role.setRoleName("测试1");
-        Permission permission = new Permission();
-        permission.setId(1);
-        List<Permission> list = new ArrayList<>();
-//        permission.setRole();
-        role.setPermissions(list);
-        List<Role> roles = new ArrayList<>();
-        user.setRoles(roles);
+        //查询用户名称
+        SysUse user = userService.getOne(new QueryWrapper<SysUse>().eq("name",name));
+        List<SysUseRole> sysUseRoles = useRoleService.list(new QueryWrapper<SysUseRole>().in("use_id",user.getId()));
+        List<Integer> roleIds =sysUseRoles.stream().map(SysUseRole::getRoleId).collect(Collectors.toList());
+        List<SysRole> roles = roleService.list(new QueryWrapper<SysRole>().in("id",roleIds));
+        List<SysRolePermission> rolePermissions = rolePermissionService.list(new QueryWrapper<SysRolePermission>().in("role_id",roleIds));
+        List<Integer> rolePermissionsIds =rolePermissions.stream().map(SysRolePermission::getPermissionId).collect(Collectors.toList());
+        List<SysPermission> sysPermissions = permissionService.list(new QueryWrapper<SysPermission>().in("id",rolePermissionsIds));
         //添加角色和权限
        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        for (Role role1:user.getRoles()) {
+        for (SysRole role1:roles) {
             //添加角色
             simpleAuthorizationInfo.addRole(role1.getRoleName());
-            for (Permission permission1:role1.getPermissions()) {
+            for (SysPermission permission1:sysPermissions) {
                 //添加权限
-                simpleAuthorizationInfo.addStringPermission(permission1.getPermission());
+                simpleAuthorizationInfo.addStringPermission(permission1.getPermissionName());
             }
         }
+
         return simpleAuthorizationInfo;
     }
 
@@ -66,17 +75,27 @@ public class MyShiroRealm extends AuthorizingRealm{
         if (authenticationToken.getPrincipal() == null) {
             return null;
         }
+
         //获取用户信息
         String name = authenticationToken.getPrincipal().toString();
-        SysUse user = new SysUse();//userService.getOne(new QueryWrapper<SysUse>().eq("name","123"));
-        user.setPassword("123");
+        SysUse user = userService.getOne(new QueryWrapper<SysUse>().eq("name",name));
+
         if (user == null) {
             //这里返回后会报出对应异常
             return null;
         } else {
             //这里验证authenticationToken和simpleAuthenticationInfo的信息
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(name, user.getPassword().toString(), getName());
+            System.out.println("测试加盐后的代码-->"+ByteSource.Util.bytes(name));
+            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(name, user.getPassword(), ByteSource.Util.bytes(name), getName());
             return simpleAuthenticationInfo;
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            System.out.println(new SimpleHash("SHA-256", "大师兄", ByteSource.Util.bytes("大师兄"), 4));
+        }catch (Exception e){
+
         }
     }
 }

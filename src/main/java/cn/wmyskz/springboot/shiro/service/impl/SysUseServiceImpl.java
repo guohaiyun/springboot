@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author jobob
- * @since 2019-04-22
+ * @since 2019-04-24
  */
 @Service
 public class SysUseServiceImpl extends ServiceImpl<SysUseMapper, SysUse> implements ISysUseService {
