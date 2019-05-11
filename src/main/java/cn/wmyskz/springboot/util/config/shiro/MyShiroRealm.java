@@ -17,9 +17,7 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +91,13 @@ public class MyShiroRealm extends AuthorizingRealm{
 
     public static void main(String[] args) {
         try {
-            System.out.println(new SimpleHash("SHA-256", "大师兄", ByteSource.Util.bytes("大师兄"), 4));
+//            System.out.println(new SimpleHash("SHA-256", "大师兄", ByteSource.Util.bytes("大师兄"), 4));
+            Date today = new Date();
+            Calendar c=Calendar.getInstance();
+            c.setTime(today);
+
+            int weekday=c.get(Calendar.DAY_OF_WEEK);
+            System.out.println(weekday);
         }catch (Exception e){
 
         }

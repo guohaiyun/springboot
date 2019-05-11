@@ -50,7 +50,7 @@
         <!--<AsyncLogger name="org.mybatis.spring" level="WARN" includeLocation="true"></AsyncLogger>-->
         <!--<AsyncLogger name="com.baomidou.dynamic" level="WARN" includeLocation="true"></AsyncLogger>-->
         <!--<AsyncLogger name="org.apache" level="ERROR" includeLocation="true"></AsyncLogger>-->
-        <!--<AsyncLogger name="cn.wmyskz.springboot.demo" level="TRACE" includeLocation="true" >-->
+        <AsyncLogger name="RocketmqClient" level="WARN" includeLocation="true" ></AsyncLogger>
             <!--<AppenderRef ref="RollingRandomAccessFile"/>-->
 
         <!--</AsyncLogger>-->

@@ -6,10 +6,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import redis.clients.jedis.Protocol;
+import redis.clients.util.SafeEncoder;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -309,6 +313,21 @@ public    class RedisUtil2 <T>{
     }
 
 
-
+    public  boolean setIfAbsent(final String key, final Serializable value, final long exptime) {
+        Boolean b = (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
+            @Override
+            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+                RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
+                RedisSerializer keySerializer = redisTemplate.getKeySerializer();
+                Object obj = connection.execute("set", keySerializer.serialize(key),
+                        valueSerializer.serialize(value),
+                        SafeEncoder.encode("NX"),
+                        SafeEncoder.encode("EX"),
+                        Protocol.toByteArray(exptime));
+                return obj != null;
+            }
+        });
+        return b;
+    }
 
 }

@@ -53,7 +53,7 @@ public class SysUseController {
                 throw lae;
             }
         }
-        subject.logout();
+//        subject.logout();
         return "test";
     }
 
@@ -63,10 +63,31 @@ public class SysUseController {
         System.out.println("测试权限");
         return "111";
     }
-
+    @RequestMapping(value = "/test4")
+//    @RequiresPermissions("test1")
+    public String test4(){
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        System.out.println("测试权限");
+        return "111";
+    }
     @RequestMapping(value = "/test3")
 //    @RequiresPermissions("test1")
-    public String test3(@RequestBody Map map){
+    public String test3(){
+        System.out.println("测试权限是否有");
+        return "111";
+    }
+
+    @RequestMapping(value = "/test5")
+//    @RequiresPermissions("test1")
+    public String test5(){
+        System.out.println("测试权限是否有");
+        return "111";
+    }
+
+    @RequestMapping(value = "/test6")
+//    @RequiresPermissions("test1")
+    public String test6(){
         System.out.println("测试权限是否有");
         return "111";
     }
