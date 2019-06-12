@@ -3,6 +3,8 @@ package cn.wmyskz.springboot.demo.controller;
 import cn.wmyskz.springboot.demo.entity.User;
 import cn.wmyskz.springboot.demo.service.TestServiceInterface;
 import cn.wmyskz.springboot.exception.MyException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,8 @@ import java.awt.event.ActionEvent;
 
 
 @Controller
-@RequestMapping("tt")
+@RequestMapping("demo")
+@Api(description = "测试demo",value = "ces")
 public class HelloController {
 
     @Autowired
@@ -32,6 +35,7 @@ public class HelloController {
     private static String c="asfaasfass";
     @RequestMapping("/getUser")
     //ModelMap modelMap
+    @ApiOperation("测试看看")
     public String hello() {
         System.out.println("afdas");
         return "index";
