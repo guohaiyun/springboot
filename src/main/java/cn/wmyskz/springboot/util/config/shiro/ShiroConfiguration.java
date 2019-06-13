@@ -115,7 +115,7 @@ public class ShiroConfiguration {
 //        //对所有用户认证
             map.put("/logout", "logout");
             map.put("/shiro/sys-use/login", "anon");
-            map.put("/**","authc");
+            map.put("/**","anon");
 //        //登录
         shiroFilterFactoryBean.setLoginUrl("/login");
 //        //首页

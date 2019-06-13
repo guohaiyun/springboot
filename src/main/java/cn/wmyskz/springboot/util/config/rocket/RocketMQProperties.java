@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-@PropertySource("classpath:rocketmq.properties")
+@PropertySource(value = "classpath:/rocketMq.properties")
 @ConfigurationProperties(prefix = "suning.rocketmq")
 @Configuration
 @Setter
